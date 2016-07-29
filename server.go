@@ -1,15 +1,17 @@
 package main
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"gopkg.in/mgo.v2/bson"
 	"log"
 )
 
 func main() {
-	data := InsertData()
-	out, err := json.Marshal(data)
-	if err != nil {
+	var data []Person
+
+	InsertData()
+	data, err := SearchPerson(bson.M{"name": "Bun"}, 0, 1)
+	if len(err) > 0 {
 		log.Fatal(err)
 	}
 
@@ -17,7 +19,7 @@ func main() {
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
-			"data":    out,
+			"data": data,
 		})
 	})
 	r.Run()

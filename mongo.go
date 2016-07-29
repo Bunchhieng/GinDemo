@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 	"log"
 )
 
@@ -12,26 +10,41 @@ type Person struct {
 	Phone string
 }
 
-func InsertData() (p Person) {
-	session, err := mgo.Dial("mongodb://localhost:27017")
-	if err != nil {
-		panic(err)
+func InsertData() {
+	query := func(c *mgo.Collection) (err error) {
+		err = c.Insert(&Person{"Bun", "4389247982374"},&Person{"Test", "324245"})
+		if err != nil {
+			log.Fatal(err)
+		}
+		return err
 	}
-	defer session.Close()
 
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB("test").C("people")
-	err = c.Insert(&Person{"Bun", "4389247982374"}, &Person{"Test", "324245"})
+	insert := func() error {
+		return withCollection("test", query)
+	}
+
+	err := insert()
 	if err != nil {
 		log.Fatal(err)
 	}
+}
 
-	result := Person{}
-	err = c.Find(bson.M{"name": "Bun"}).One(&result)
-	if err != nil {
-		log.Fatal(nil)
+func SearchPerson(q interface{}, skip int, limit int) (searchResults []Person, searchErr string) {
+	searchErr = ""
+	searchResults = []Person{}
+	query := func(c *mgo.Collection) error {
+		fn := c.Find(q).Skip(skip).Limit(limit).All(&searchResults)
+		if limit < 0 {
+			fn = c.Find(q).Skip(skip).All(&searchResults)
+		}
+		return fn
 	}
-
-	fmt.Println("Phone: ", result.Phone)
-	return result
+	search := func() error {
+		return withCollection("person", query)
+	}
+	err := search()
+	if err != nil {
+		searchErr = "Database Error"
+	}
+	return
 }
