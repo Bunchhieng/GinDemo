@@ -6,7 +6,7 @@ import (
 
 var (
 	mgoSession   *mgo.Session
-  databaseName = "test"
+	databaseName = "test"
 )
 
 func getSession() *mgo.Session {

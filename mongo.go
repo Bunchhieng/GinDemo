@@ -12,7 +12,7 @@ type Person struct {
 
 func InsertData() {
 	query := func(c *mgo.Collection) (err error) {
-		err = c.Insert(&Person{"Bun", "4389247982374"},&Person{"Test", "324245"})
+		err = c.Insert(&Person{"Bun", "4389247982374"}, &Person{"Test", "324245"})
 		if err != nil {
 			log.Fatal(err)
 		}
