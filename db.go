@@ -6,13 +6,13 @@ import (
 
 var (
 	mgoSession   *mgo.Session
-	databaseName = "http://127.0.0.1:27017"
+  databaseName = "test"
 )
 
 func getSession() *mgo.Session {
 	if mgoSession == nil {
 		var err error
-		mgoSession, err = mgo.Dial(databaseName)
+		mgoSession, err = mgo.Dial("mongodb://localhost:27017")
 		if err != nil {
 			panic(err) // no, not really
 		}

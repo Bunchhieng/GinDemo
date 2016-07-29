@@ -10,7 +10,8 @@ func main() {
 	var data []Person
 
 	InsertData()
-	data, err := SearchPerson(bson.M{"name": "Bun"}, 0, 1)
+	data, err := SearchPerson(bson.M{"name": "Bun"}, 0, 10)
+	log.Print(data)
 	if len(err) > 0 {
 		log.Fatal(err)
 	}
